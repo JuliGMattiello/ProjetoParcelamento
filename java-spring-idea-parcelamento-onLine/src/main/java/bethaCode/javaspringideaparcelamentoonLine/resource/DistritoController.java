@@ -1,9 +1,7 @@
 package bethaCode.javaspringideaparcelamentoonLine.resource;
 
 import bethaCode.javaspringideaparcelamentoonLine.model.Distrito;
-import bethaCode.javaspringideaparcelamentoonLine.model.Municipio;
 import bethaCode.javaspringideaparcelamentoonLine.repository.DistritoRepository;
-import bethaCode.javaspringideaparcelamentoonLine.repository.MunicipioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

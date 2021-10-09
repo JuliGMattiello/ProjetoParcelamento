@@ -12,10 +12,6 @@ public class AbstractRegion extends AbstractEntity {
     @Column(name= "NOME")
     private String nome;
 
-
-
-
-
     public String getNome() {
         return nome;
     }
