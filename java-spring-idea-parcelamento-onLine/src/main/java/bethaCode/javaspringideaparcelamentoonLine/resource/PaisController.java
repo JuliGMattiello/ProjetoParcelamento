@@ -1,5 +1,6 @@
 package bethaCode.javaspringideaparcelamentoonLine.resource;
 
+import bethaCode.javaspringideaparcelamentoonLine.enterprise.ValidationException;
 import bethaCode.javaspringideaparcelamentoonLine.model.Pais;
 import bethaCode.javaspringideaparcelamentoonLine.repository.PaisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/paises")
-public class PaisController {
+public class PaisController extends AbstractResource{
 
     @Autowired
     private PaisRepository repository;
@@ -47,7 +48,14 @@ public class PaisController {
 //    }
 
     @PostMapping
-    public Pais create(@Valid @RequestBody Pais pais){
+    public Pais create(@Valid @RequestBody Pais pais) throws ValidationException{
+
+        List<Pais> byNome = repository.findByNome(pais.getNome());
+
+        if (!byNome.isEmpty()){
+            throw new ValidationException("Já existe um país com o mesmo nome!");
+        }
+
         return repository.save(pais);
     }
 //    public PaisDTO create(@Valid @RequestBody Pais pais){
@@ -57,11 +65,17 @@ public class PaisController {
 
     @PutMapping("/{id}")
     public Pais update(@PathVariable(value = "id") Long paisId,
-                          @RequestBody Pais pais) throws EntityNotFoundException {
+                          @RequestBody Pais pais) throws EntityNotFoundException, ValidationException{
         Pais paisFind = repository.findById(paisId)
                 .orElseThrow(() -> new EntityNotFoundException("País não encontrado com ID: " + paisId));
         paisFind.setId(pais.getId());
         paisFind.setNome(pais.getNome());
+
+        List<Pais> byNome = repository.findByNome(pais.getNome());
+
+        if (!byNome.isEmpty()){
+            throw new ValidationException("Já existe um país com o mesmo nome!");
+        }
 
         return repository.save(paisFind);
 
@@ -84,19 +98,6 @@ public class PaisController {
 
         repository.delete(paisFind);
         return ResponseEntity.noContent().build();
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
     }
 
 }

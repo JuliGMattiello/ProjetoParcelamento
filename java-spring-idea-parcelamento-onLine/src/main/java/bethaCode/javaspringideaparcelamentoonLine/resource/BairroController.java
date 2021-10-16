@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/bairros")
-public class BairroController{
+public class BairroController extends AbstractResource{
 
     @Autowired
     private BairroRepository repository;
@@ -59,19 +59,6 @@ public class BairroController{
                 .orElseThrow(() -> new EntityNotFoundException("Bairro não encontrado com ID: " + bairroId));
         repository.delete(bairroFind);
         return ResponseEntity.noContent().build();
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
     }
 
 }

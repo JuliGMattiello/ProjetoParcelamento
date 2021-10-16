@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/municipios")
-public class MunicipioController{
+public class MunicipioController extends AbstractResource{
 
     @Autowired
     private MunicipioRepository repository;
@@ -77,18 +77,5 @@ public class MunicipioController{
         repository.delete(municipioFind);
         return ResponseEntity.noContent().build();
     }
-
-        @ResponseStatus(HttpStatus.BAD_REQUEST)
-        @ExceptionHandler(MethodArgumentNotValidException.class)
-        public Map<String, String> handleValidationExceptions(
-                MethodArgumentNotValidException ex) {
-            Map<String, String> errors = new HashMap<>();
-            ex.getBindingResult().getAllErrors().forEach((error) -> {
-                String fieldName = ((FieldError) error).getField();
-                String errorMessage = error.getDefaultMessage();
-                errors.put(fieldName, errorMessage);
-            });
-            return errors;
-        }
 
 }

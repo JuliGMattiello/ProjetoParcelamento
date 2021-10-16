@@ -17,7 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/distritos")
-public class DistritoController{
+public class DistritoController extends AbstractResource{
 
     @Autowired
     private DistritoRepository repository;
@@ -59,19 +59,6 @@ public class DistritoController{
                 .orElseThrow(() -> new EntityNotFoundException("Distrito não encontrado com ID: " + distritoId));
         repository.delete(distritoFind);
         return ResponseEntity.noContent().build();
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
     }
 
 }

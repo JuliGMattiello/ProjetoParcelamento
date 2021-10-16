@@ -18,7 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/logradouros")
-public class LogradouroController {
+public class LogradouroController extends AbstractResource{
 
     @Autowired
     private LogradouroRepository repository;
@@ -59,19 +59,6 @@ public class LogradouroController {
                 .orElseThrow(() -> new EntityNotFoundException("Logradouro não encontrado com ID: " + logradouroId));
         repository.delete(logradouroFind);
         return ResponseEntity.noContent().build();
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
     }
 
 }
